@@ -13,6 +13,7 @@ contract SushiBar is ERC20("SushiBar", "xSUSHI"){
         sushi = _sushi;
     }
 
+    // 将SUSHI存入Bar 获取更多SUSHI
     // Enter the bar. Pay some SUSHIs. Earn some shares.
     function enter(uint256 _amount) public {
         uint256 totalSushi = sushi.balanceOf(address(this));
@@ -26,6 +27,7 @@ contract SushiBar is ERC20("SushiBar", "xSUSHI"){
         sushi.transferFrom(msg.sender, address(this), _amount);
     }
 
+    // 取出自己的SUSHI
     // Leave the bar. Claim back your SUSHIs.
     function leave(uint256 _share) public {
         uint256 totalShares = totalSupply();
