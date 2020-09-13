@@ -24,6 +24,7 @@ contract SushiMaker {
         weth = _weth;
     }
 
+    // 将TOKEN0-TOKEN1交易对转换为ETH 再转换为SUSHI
     function convert(address token0, address token1) public {
         // At least we try to make front-running harder to do.
         require(msg.sender == tx.origin, "do not convert from contract");
@@ -34,6 +35,7 @@ contract SushiMaker {
         _toSUSHI(wethAmount);
     }
 
+    // 换算为ETH
     function _toWETH(address token) internal returns (uint256) {
         if (token == sushi) {
             uint amount = IERC20(token).balanceOf(address(this));
@@ -63,11 +65,12 @@ contract SushiMaker {
         return amountOut;
     }
 
+    // 换算为SUSHI
     function _toSUSHI(uint256 amountIn) internal {
-        IUniswapV2Pair pair = IUniswapV2Pair(factory.getPair(weth, sushi));
+        IUniswapV2Pair pair = IUniswapV2Pair(factory.getPair(weth, sushi)); // ETH-SUSHI对
         (uint reserve0, uint reserve1,) = pair.getReserves();
         address token0 = pair.token0();
-        (uint reserveIn, uint reserveOut) = token0 == weth ? (reserve0, reserve1) : (reserve1, reserve0);
+        (uint reserveIn, uint reserveOut) = token0 == weth ? (reserve0, reserve1) : (reserve1, reserve0); //TOKEN0是ETH的话 就是ETH转换为SUSHI
         uint amountInWithFee = amountIn.mul(997);
         uint numerator = amountInWithFee.mul(reserveOut);
         uint denominator = reserveIn.mul(1000).add(amountInWithFee);
