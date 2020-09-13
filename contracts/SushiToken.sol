@@ -8,11 +8,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 // SushiToken with Governance.
 contract SushiToken is ERC20("SushiToken", "SUSHI"), Ownable {
     /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (MasterChef).
+    // 铸币操作 向指定地址发送指定数量的SUSHI 只能由Owner调用
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
     }
 
+    // 代币治理机制 从YAM和COMP参考改动而来
     // Copied and modified from YAM code:
     // https://github.com/yam-finance/yam-protocol/blob/master/contracts/token/YAMGovernanceStorage.sol
     // https://github.com/yam-finance/yam-protocol/blob/master/contracts/token/YAMGovernance.sol
@@ -53,6 +55,8 @@ contract SushiToken is ERC20("SushiToken", "SUSHI"), Ownable {
      * @notice Delegate votes from `msg.sender` to `delegatee`
      * @param delegator The address to get delegatee for
      */
+     
+     // 授权人
     function delegates(address delegator)
         external
         view
@@ -65,6 +69,8 @@ contract SushiToken is ERC20("SushiToken", "SUSHI"), Ownable {
     * @notice Delegate votes from `msg.sender` to `delegatee`
     * @param delegatee The address to delegate votes to
     */
+    
+    // 被授权人
     function delegate(address delegatee) external {
         return _delegate(msg.sender, delegatee);
     }
@@ -126,6 +132,7 @@ contract SushiToken is ERC20("SushiToken", "SUSHI"), Ownable {
      * @param account The address to get votes balance
      * @return The number of current votes for `account`
      */
+     // 某个地址 当前的选票数
     function getCurrentVotes(address account)
         external
         view
